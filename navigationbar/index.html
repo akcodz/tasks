@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Navbar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Calibri";
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1rem 2rem;
+        box-shadow: 2px 0px 5px black;
+        position: relative;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        
+     
+      }
+      .links {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 60%;
+        transition: all ease-in-out 1s;
+      }
+      .links a {
+        text-decoration: none;
+        padding: 0 1rem;
+        color: black;
+      }
+      .icon {
+        display: none;
+        font-size: 2rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .links {
+          display: none;
+          flex-direction: column;
+          gap: 1rem;
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translate(-50%, 0);
+          padding: 1rem;
+          width: 100%;
+          border-radius: 10px;
+        }
+
+        .links.active {
+          display: flex;
+          box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.514);
+        }
+
+        .icon {
+          display: inline-block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="navbar">
+      <h2>Akash</h2>
+      <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Contact</a>
+        <a href="#">About Us</a>
+        <a href="#">Explore</a>
+      </div>
+      <span class="icon" id="menuIcon" onclick="toggleMenu()">&#9776;</span>
+    </nav>
+
+    <script>
+      function toggleMenu() {
+        const links = document.querySelector('.links');
+        const icon = document.getElementById('menuIcon');
+        const navbar = document.getElementById('navbar');
+        
+    
+        links.classList.toggle('active');
+
+       
+        if (links.classList.contains('active')) {
+          icon.innerHTML = 'X';
+          navbar.style.boxShadow = 'none'; 
+        } else {
+          icon.innerHTML = '&#9776;';
+          navbar.style.boxShadow = '2px 0px 5px black'; 
+      }}
+    </script>
+  </body>
+</html>

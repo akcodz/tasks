@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Trebuchet MS";
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(18, 18, 18);
+      }
+      .calculator {
+        background-color: rgba(31, 31, 31, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 5px rgb(102, 252, 241),
+          0px 0px 5px rgb(102, 252, 241);
+        display: inline-block;
+      }
+      h2 {
+        text-align: center;
+        color: rgb(102, 252, 241);
+      }
+      .number-input {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+        border: 1px solid rgb(68, 68, 68);
+        background-color: rgb(51, 51, 51);
+        color: rgb(197, 198, 199);
+        width: 200px;
+      }
+      .operator-buttons {
+        margin: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid rgb(68, 68, 68);
+        cursor: pointer;
+        width: 50px;
+        background-color: rgb(46, 46, 46);
+        color: rgb(255, 255, 255);
+        font-size: 1.2rem;
+      }
+      button:hover {
+        background-color: rgb(69, 162, 158);
+      }
+      .result-display {
+        margin-top: 20px;
+        font-size: 20px;
+        text-align: center;
+        color: rgb(102, 252, 241);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <h2>Dark Themed Calculator</h2>
+      <input type="number" class="num1 number-input" placeholder="Enter first number" />
+      <input type="number" class="num2 number-input" placeholder="Enter second number" />
+      <div class="operator-buttons">
+        <button onclick="calculate('+')">+</button>
+        <button onclick="calculate('-')">-</button>
+        <button onclick="calculate('*')">*</button>
+        <button onclick="calculate('/')">/</button>
+      </div>
+
+      <div class="result-display"></div>
+    </div>
+
+    <script>
+      function calculate(operator) {
+        const num1 = parseFloat(document.querySelector(".num1").value);
+        const num2 = parseFloat(document.querySelector(".num2").value);
+        let result;
+
+        if (isNaN(num1) || isNaN(num2)) {
+          result = "Please enter valid numbers.";
+        } else {
+          switch (operator) {
+            case "+":
+              result = num1 + num2;
+              break;
+            case "-":
+              result = num1 - num2;
+              break;
+            case "*":
+              result = num1 * num2;
+              break;
+            case "/":
+              result = num1 / num2;
+              break;
+            default:
+              result = "Invalid operation";
+          }
+        }
+
+        document.querySelector(".result-display").innerHTML = `Result: ${result}`;
+      }
+    </script>
+  </body>
+</html>
