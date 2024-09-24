@@ -1,187 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-Do List with Local Storage</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: rgb(18, 18, 18);
-        color: rgb(245, 245, 245);
-        margin: 0;
-        padding: 20px;
-      }
-      .container {
-        max-width: 400px;
-        margin: auto;
-        background: rgb(38, 38, 38);
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-      h2 {
-        text-align: center;
-        color: rgb(102, 252, 241);
-      }
-      .todo-input {
-        width: 80%;
-        padding: 10px;
-        border: 1px solid rgb(68, 68, 68);
-        border-radius: 5px;
-        background-color: rgb(51, 51, 51);
-        color: rgb(245, 245, 245);
-      }
-      .add-btn {
-        padding: 10px;
-        margin-left: 5px;
-        border: none;
-        border-radius: 5px;
-        background-color: rgb(40, 167, 69);
-        color: white;
-        cursor: pointer;
-      }
-      .add-btn:hover {
-        background-color: rgb(33, 136, 56);
-      }
-      ul {
-        list-style: none;
-        padding: 0;
-      }
-      li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid rgb(68, 68, 68);
-      }
-      .buttons {
-        display: flex;
-        gap: 5px;
-      }
-      .remove,
-      .done {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-      }
-      .remove {
-        background-color: rgb(220, 53, 69);
-      }
-      .remove:hover {
-        background-color: rgb(200, 35, 51);
-      }
-      .done {
-        background-color: rgb(255, 193, 7);
-      }
-      .done:hover {
-        background-color: rgb(224, 168, 0);
-      }
-      .completed {
-        text-decoration: line-through;
-        color: rgb(102, 102, 102);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h2>To-Do List</h2>
-      <input type="text" class="todo-input" placeholder="Add a new task" />
-      <button class="add-btn">Add</button>
-      <ul class="todo-list"></ul>
-    </div>
+<script>
+  const addBtn = document.querySelector(".add-btn");
+  const todoInput = document.querySelector(".todo-input");
+  const todoList = document.querySelector(".todo-list");
 
-    <script>
-      const addButton = document.querySelector(".add-btn");
-      const todoInput = document.querySelector(".todo-input");
-      const todoList = document.querySelector(".todo-list");
+  document.addEventListener("DOMContentLoaded", loadTasks);
+  addBtn.addEventListener("click", addTask);
+  todoInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") addTask();
+  });
 
-      document.addEventListener("DOMContentLoaded", loadTasksFromLocalStorage);
-      addButton.addEventListener("click", addTask);
-      todoInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          addTask();
-        }
+  function addTask() {
+    const todoText = todoInput.value;
+    if (todoText) {
+      const li = createTask(todoText);
+      todoList.appendChild(li);
+      saveTask(todoText);
+      todoInput.value = "";
+    }
+  }
+
+  function createTask(text) {
+    const li = document.createElement("li");
+    const taskSpan = document.createElement("span");
+    taskSpan.textContent = text;
+
+    const btnContainer = document.createElement("div");
+    btnContainer.classList.add("buttons");
+
+    const doneBtn = document.createElement("button");
+    doneBtn.textContent = "Done";
+    doneBtn.classList.add("done");
+    doneBtn.addEventListener("click", function () {
+      taskSpan.classList.toggle("completed");
+      updateTasks();
+    });
+
+    const rmvBtn = document.createElement("button");
+    rmvBtn.textContent = "Remove";
+    rmvBtn.classList.add("remove");
+    rmvBtn.addEventListener("click", function () {
+      todoList.removeChild(li);
+      removeTask(text);
+    });
+
+    btnContainer.appendChild(doneBtn);
+    btnContainer.appendChild(rmvBtn);
+    li.appendChild(taskSpan);
+    li.appendChild(btnContainer);
+
+    return li;
+  }
+
+  function saveTask(task) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.push({ text: task, completed: false });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function loadTasks() {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach((task) => {
+      const li = createTask(task.text);
+      if (task.completed) li.querySelector("span").classList.add("completed");
+      todoList.appendChild(li);
+    });
+  }
+
+  function removeTask(text) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks = tasks.filter((task) => task.text !== text);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function updateTasks() {
+    let tasks = [];
+    document.querySelectorAll(".todo-list li").forEach((li) => {
+      tasks.push({
+        text: li.querySelector("span").textContent,
+        completed: li.querySelector("span").classList.contains("completed"),
       });
-
-      function addTask() {
-        const todoText = todoInput.value;
-        if (todoText) {
-          const li = createTaskElement(todoText);
-          todoList.appendChild(li);
-          saveTaskToLocalStorage(todoText);
-          todoInput.value = "";
-        }
-      }
-
-      function createTaskElement(todoText) {
-        const li = document.createElement("li");
-
-        const taskSpan = document.createElement("span");
-        taskSpan.textContent = todoText;
-
-        const buttonContainer = document.createElement("div");
-        buttonContainer.classList.add("buttons");
-
-        const completeButton = document.createElement("button");
-        completeButton.textContent = "Done";
-        completeButton.classList.add("done");
-        completeButton.addEventListener("click", function () {
-          taskSpan.classList.toggle("completed");
-          updateLocalStorage();
-        });
-
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remove";
-        removeButton.classList.add("remove");
-        removeButton.addEventListener("click", function () {
-          todoList.removeChild(li);
-          removeTaskFromLocalStorage(todoText);
-        });
-
-        buttonContainer.appendChild(completeButton);
-        buttonContainer.appendChild(removeButton);
-        li.appendChild(taskSpan);
-        li.appendChild(buttonContainer);
-
-        return li;
-      }
-
-      function saveTaskToLocalStorage(task) {
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        tasks.push({ text: task, completed: false });
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-      }
-
-      function loadTasksFromLocalStorage() {
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        tasks.forEach((task) => {
-          const li = createTaskElement(task.text);
-          if (task.completed) {
-            li.querySelector("span").classList.add("completed");
-          }
-          todoList.appendChild(li);
-        });
-      }
-
-      function removeTaskFromLocalStorage(taskText) {
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        tasks = tasks.filter((task) => task.text !== taskText);
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-      }
-
-      function updateLocalStorage() {
-        let tasks = [];
-        document.querySelectorAll(".todo-list li").forEach((li) => {
-          tasks.push({
-            text: li.querySelector("span").textContent,
-            completed: li.querySelector("span").classList.contains("completed"),
-          });
-        });
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-      }
-    </script>
-  </body>
-</html>
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+</script>
