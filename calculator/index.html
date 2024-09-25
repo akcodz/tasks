@@ -104,6 +104,10 @@
               result = num1 * num2;
               break;
             case "/":
+               if(num2==0){
+        result= "Error: Division by zero is not allowed ";
+        break;
+    }
               result = num1 / num2;
               break;
             default:
